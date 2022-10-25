@@ -1,0 +1,13 @@
+{
+  "name": "@genee/fallocate",
+  "version": "1.0.0",
+  "main": "index.js",
+  "types": "./index.d.ts",
+  "author": "Jia Huang (iamfat@gmail.com)",
+  "license": "MIT",
+  "devDependencies": {
+    "bindings": "^1.5.0",
+    "nan": "^2.17.0"
+  },
+  "gypfile": true
+}
