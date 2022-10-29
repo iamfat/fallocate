@@ -1,7 +1,7 @@
-# @genee/fallocate
+# fallocate for node.js
 
 ```typescript
-import fallocate from '@genee/fallocate';
+import fallocate from 'fallocate';
 
 fallocate(fd, 0, 1024);
 ```
