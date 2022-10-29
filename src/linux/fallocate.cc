@@ -1,35 +1,38 @@
-#include <nan.h>
 #include <errno.h>
+#include <unistd.h>
 #include <fcntl.h>
 
-using namespace v8;
+#include <napi.h>
 
-NAN_METHOD(fallocate)
+using namespace Napi;
+
+Value fallocate(const CallbackInfo &info)
 {
+    auto env = info.Env();
+
     if (info.Length() < 3) {
-        Nan::ThrowTypeError("Wrong number of arguments");
-        return;
+        Error::New(env, "Wrong number of arguments").ThrowAsJavaScriptException();
+        return env.Undefined();
     }
 
-    if (!info[0]->IsNumber() || !info[1]->IsNumber() || !info[2]->IsNumber()) {
-        Nan::ThrowTypeError("Wrong arguments");
-        return;
+    if (!info[0].IsNumber() || !info[1].IsNumber() || !info[2].IsNumber()) {
+        Error::New(env, "Wrong arguments").ThrowAsJavaScriptException();
+        return env.Undefined();
     }
 
-    Local<Context> ctx = Nan::GetCurrentContext();
+    int   fd     = info[0].As<Number>();
+    off_t offset = info[1].As<Number>();
+    off_t len    = info[2].As<Number>();
 
-    int   fd     = info[0]->Uint32Value(ctx).FromJust();
-    off_t offset = info[1]->NumberValue(ctx).FromJust();
-    off_t len    = info[2]->NumberValue(ctx).FromJust();
-    int   retval = posix_fallocate(fd, 0, offset + len);
+    int retval = posix_fallocate(fd, 0, offset + len);
 
-    info.GetReturnValue().Set(retval == -1 ? -errno : retval);
+    return Number::New(env, retval == -1 ? -errno : retval);
 }
 
-NAN_MODULE_INIT(Init)
+Object Init(Env env, Object exports)
 {
-    Nan::Set(target, Nan::New("fallocate").ToLocalChecked(),
-             Nan::GetFunction(Nan::New<FunctionTemplate>(fallocate)).ToLocalChecked());
+    exports.Set(String::New(env, "fallocate"), Function::New(env, fallocate));
+    return exports;
 }
 
-NODE_MODULE(fallocate, Init)
+NODE_API_MODULE(NODE_GYP_MODULE_NAME, Init);

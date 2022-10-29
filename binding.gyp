@@ -1,8 +1,8 @@
 {
     "targets": [{
         "target_name": "fallocate",
-        "cflags": ["-Wno-cast-function-type"],
-        "include_dirs": ["<!(node -e \"require('nan')\")"],
+        "defines": ['NAPI_DISABLE_CPP_EXCEPTIONS'],
+        "include_dirs": ["<!@(node -p \"require('node-addon-api').include\")"],
         "conditions": [
             ['OS=="mac"', {
                 "sources": [
