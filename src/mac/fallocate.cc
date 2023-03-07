@@ -43,7 +43,7 @@ Value fallocate(const CallbackInfo &info)
 
 Object Init(Env env, Object exports)
 {
-    exports.Set(String::New(env, "fallocate"), Function::New(env, fallocate));
+    exports.Set(String::New(env, "fallocate"), Function::New<fallocate>(env));
     return exports;
 }
 
